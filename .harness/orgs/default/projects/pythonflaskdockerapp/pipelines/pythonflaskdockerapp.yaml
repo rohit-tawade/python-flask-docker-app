@@ -13,7 +13,6 @@ pipeline:
     - stage:
         name: Build Test Push
         identifier: Build_Test_Push
-        description: ""
         type: CI
         spec:
           cloneCodebase: true
@@ -27,22 +26,23 @@ pipeline:
             arch: Amd64
           runtime:
             type: Docker
-            spec: {}
+            spec:
+              connectorRef: docker-delegate
           execution:
             steps:
               - step:
                   type: BuildAndPushDockerRegistry
-                  name: BuildAndPushDockerRegistry_1
-                  identifier: BuildAndPushDockerRegistry_1
+                  name: Build and Push to Docker Hub
+                  identifier: Build_And_Push
                   spec:
                     connectorRef: dockerconnector
-                    repo: python-flask-docker-app
+                    repo: <your-dockerhub-username>/python-flask-docker-app
                     tags:
                       - latest
               - step:
                   type: Semgrep
-                  name: Semgrep_1
-                  identifier: Semgrep_1
+                  name: Run Semgrep Scan
+                  identifier: Semgrep_Scan
                   spec:
                     target:
                       detection: auto
@@ -50,13 +50,12 @@ pipeline:
                     advanced:
                       log:
                         level: info
-                      args: {}
                     mode: orchestration
                     config: default
               - step:
                   type: Gitleaks
-                  name: Gitleaks_1
-                  identifier: Gitleaks_1
+                  name: Run Gitleaks Scan
+                  identifier: Gitleaks_Scan
                   spec:
                     target:
                       detection: auto
@@ -64,9 +63,9 @@ pipeline:
                     advanced:
                       log:
                         level: info
-                      args: {}
                     mode: orchestration
                     config: default
+          sharedPaths: []
         when:
           pipelineStatus: Success
         delegateSelectors:
