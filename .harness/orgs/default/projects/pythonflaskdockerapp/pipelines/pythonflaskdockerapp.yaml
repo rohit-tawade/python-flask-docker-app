@@ -1,0 +1,69 @@
+pipeline:
+  name: python-flask-docker-app
+  identifier: pythonflaskdockerapp
+  projectIdentifier: pythonflaskdockerapp
+  orgIdentifier: default
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        repoName: account.python-flask-docker-app
+        build: <+input>
+  stages:
+    - stage:
+        name: Build Test Push
+        identifier: Build_Test_Push
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          caching:
+            enabled: true
+            override: true
+          buildIntelligence:
+            enabled: true
+          platform:
+            os: Windows
+            arch: Amd64
+          runtime:
+            type: Docker
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: BuildAndPushDockerRegistry
+                  name: BuildAndPushDockerRegistry_1
+                  identifier: BuildAndPushDockerRegistry_1
+                  spec:
+                    connectorRef: dockerconnector
+                    repo: python-flask-docker-app
+                    tags:
+                      - latest
+              - step:
+                  type: Semgrep
+                  name: Semgrep_1
+                  identifier: Semgrep_1
+                  spec:
+                    target:
+                      detection: auto
+                      type: repository
+                    advanced:
+                      log:
+                        level: info
+                      args: {}
+                    mode: orchestration
+                    config: default
+              - step:
+                  type: Gitleaks
+                  name: Gitleaks_1
+                  identifier: Gitleaks_1
+                  spec:
+                    target:
+                      detection: auto
+                      type: repository
+                    advanced:
+                      log:
+                        level: info
+                      args: {}
+                    mode: orchestration
+                    config: default
