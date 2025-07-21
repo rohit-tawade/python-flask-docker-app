@@ -67,3 +67,8 @@ pipeline:
                       args: {}
                     mode: orchestration
                     config: default
+        delegateSelectors:
+          - docker-delegate
+          - linux-amd64
+        when:
+          pipelineStatus: Success
