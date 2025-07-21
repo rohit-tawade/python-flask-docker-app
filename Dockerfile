@@ -4,7 +4,7 @@ COPY . /app
 
 WORKDIR /app
 
-EXPOSE 5000
+EXPOSE 3000
 
 RUN pip install -r requirements.txt
 
